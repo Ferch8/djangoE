@@ -26,3 +26,16 @@ def post_new(request):
     else:
         form = PublicacionForm()
     return render(request, 'blog/post_edit.html', {'form': form})
+
+def post_edit(request, pk):
+    post = get_object_or_404(Publicacion, pk=pk)
+    if request.method == "POST":
+        form = PostForm(request.POST, instance=post)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user
+            post.save()
+            return redirect('postear', pk=post.pk)
+    else:
+        form = PublicacionForm(instance=post)
+    return render(request, 'blog/post_edit.html', {'form': form})
