@@ -2,7 +2,8 @@ from django.shortcuts import render, get_object_or_404
 from django.shortcuts import render
 from django.utils import timezone
 from .models import Publicacion
-
+from .forms import PublicacionForm
+from django.shortcuts import redirect
 # Create your views here.
 
 def listar_pub(request):
@@ -12,3 +13,16 @@ def listar_pub(request):
 def detalle_pub(request, pk):
     p = get_object_or_404(Publicacion, pk=pk)
     return render(request, 'blog/detalle_publicacion.html', {'p': p})
+
+def post_new(request):
+    if request.method == "POST":
+        form = PublicacionForm(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user
+            post.fecha_publicacion = timezone.now()
+            post.save()
+            return redirect('postear', pk=post.pk)
+    else:
+        form = PublicacionForm()
+    return render(request, 'blog/post_edit.html', {'form': form})
