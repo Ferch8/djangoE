@@ -48,10 +48,6 @@ def post_publish(request, pk):
     post.publish()
     return redirect('postear', pk=pk)
 
-def publish(self):
-    self.fecha_publicacion = timezone.now()
-    self.save()
-
 def post_remove(request, pk):
     post = get_object_or_404(Publicacion, pk=pk)
     post.delete()
