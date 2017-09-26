@@ -42,3 +42,12 @@ def post_edit(request, pk):
 def post_draft_list(request):
     posts = Publicacion.objects.filter(fecha_publicacion__isnull=True).order_by('fecha_creacion')
     return render(request, 'blog/post_draft_list.html', {'posts': posts})
+
+def post_publish(request, pk):
+    post = get_object_or_404(Publicacion, pk=pk)
+    post.publish()
+    return redirect('postear', pk=pk)
+
+def publish(self):
+    self.fecha_publicacion = timezone.now()
+    self.save()
